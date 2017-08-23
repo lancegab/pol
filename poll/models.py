@@ -9,13 +9,18 @@ class Topic(models.Model):
     pub_date    = models.DateTimeField('date added')
 
     def __str__(self):
-        return self.name
+        return self.topic_text
 
-class Entry(models.Model):
-    entry_text  = models.CharField(max_length=150)
+class Choice(models.Model):
+    choice_text = models.CharField(max_length=150)
     topic       = models.ForeignKey(Topic, on_delete = models.CASCADE)
     votes       = models.IntegerField(default=0)
     pub_date    = models.DateTimeField('date added')
 
     def __str__(self):
-        return self.name
+        return self.choice_text
+
+class Comment(models.Model):
+    comment_text    = models.CharField(max_length=1000)
+    type            = models.CharField(max_length=3)
+    choice          = models.ForeignKey(Choice, on_delete = models.CASCADE)

@@ -1,2 +1,13 @@
-<h1>You are now at the poll app.</h1>
-<h2>Start voting</h2>
+{% if all_topics %}
+
+<h1>Start polling!</h1>
+
+<ul>
+    {% for topic in all_topics %}
+        <li><a href="{% url 'poll:detail' topic.id %}"> {{ topic.topic_text }} </a></li>
+    {% endfor %}
+</ul>
+
+{% else %}
+<h1>No polls yet.</h1>
+{% endif %}
