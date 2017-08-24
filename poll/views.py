@@ -7,25 +7,50 @@ from django.http import HttpResponseRedirect, HttpResponse
 
 from django.urls import reverse
 
+from django.views import generic
+
 from .models import Topic
 from .models import Choice
 
 
 # Create your views here.
-def index(request):
-    all_topics = Topic.objects.all();
+# def index(request):
+#     all_topics = Topic.objects.all();
+#
+#     return render(request, "poll/index.html", {'all_topics' : all_topics})
+#
+# def detail(request, topic_id):
+#     topic   = get_object_or_404(Topic, pk = topic_id)
+#     choices =  get_list_or_404(Choice, topic_id = topic_id)
+#
+#     return render(request, "poll/detail.html",
+#         {
+#             'topic'  : topic,
+#             'choices': choices
+#         })
+#
+# def results(request, topic_id):
+#     topic = get_object_or_404(Topic, pk = topic_id)
+#     return render(request, 'poll/results.html', {'topic': topic})
 
-    return render(request, "poll/index.html", {'all_topics' : all_topics})
+class IndexView(generic.ListView):
+    template_name = 'poll/index.html'
+    context_object_name = 'topic_list'
 
-def detail(request, topic_id):
-    topic   = get_object_or_404(Topic, pk = topic_id)
-    choices =  get_list_or_404(Choice, topic_id = topic_id)
+    def get_queryset(self):
+        """Return the last five published topics."""
+        return Topic.objects.order_by('-pub_date')
 
-    return render(request, "poll/detail.html",
-        {
-            'topic'  : topic,
-            'choices': choices
-        })
+
+class DetailView(generic.DetailView):
+    model = Topic
+    template_name = 'poll/detail.html'
+
+
+class ResultsView(generic.DetailView):
+    model = Topic
+    template_name = 'poll/results.html'
+
 
 def vote(request, topic_id):
     topic =  get_object_or_404(Topic, pk = topic_id)
@@ -44,7 +69,3 @@ def vote(request, topic_id):
         # with POST data. This prevents data from being posted twice if a
         # user hits the Back button.
         return HttpResponseRedirect(reverse('poll:results', args=(topic.id,)))
-
-def results(request, topic_id):
-    topic = get_object_or_404(Topic, pk = topic_id)
-    return render(request, 'poll/results.html', {'topic': topic})

@@ -1,9 +1,9 @@
-{% if all_topics %}
+{% if topic_list %}
 
 <h1>Start polling!</h1>
 
 <ul>
-    {% for topic in all_topics %}
+    {% for topic in topic_list %}
         <li><a href="{% url 'poll:detail' topic.id %}"> {{ topic.topic_text }} </a></li>
     {% endfor %}
 </ul>
